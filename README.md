@@ -98,7 +98,7 @@ python app.py
 
 **email** : Το email προς αναζήτηση. Όπου υπάρχει, αντικατάσταση με το email που θέλουμε να δοκιμάσουμε. Τα email αυτά, για να έχουμε σωστά αποτελέσματα, προέρχνται από το students.json
 
-### Ερώτημα 1 /createUser
+### /createUser
 POST request URL: http://127.0.0.1:5000/createUser
 <br/>Δέχεται στο body του request ενα json της μορφής:
 
@@ -118,7 +118,7 @@ danai was added to the MongoDB
 A user with the given username already exists
 ```
 
-### Ερώτημα 2 /login
+### /login
 POST request URL: http://127.0.0.1:5000/login
 
 Δέχεται στο body του request ενα json της μορφής:
@@ -147,7 +147,7 @@ Data: {
 Wrong username or password.
 ```
 
-### Ερώτημα 3 /getStudent/<string:email>
+### /delete_account
 GET request URL: http://127.0.0.1:5000/getStudent/email
 
 Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
