@@ -5,7 +5,6 @@
 > * [Δεύτερη Εργασία Πληροφοριακών Συστημάτων](#title--repository-name)
 >   * [Table of contents](#table-of-contents)
 >   * [About / Synopsis](#about--synopsis)
->   * [Requirements](#requirements)
 >   * [Setup](#setup)
 >   * [Tasks](#tasks)
 >   * [Example Usage](#example-usage)
@@ -20,44 +19,12 @@
  <br/>Yλοποιημένο σε Docker περιβάλλον.
  <br/>Για τον έλεγχο της υλοποίησης χρησιμοποιήθηκε το [Postman](https://www.postman.com/)  
  
- ## Requirements
 
-###### Εγκατάσταση dependencies
-
-```
-pip install -r requirements.txt
-```
 
 Προαπαραίτητη η ύπαρξη και η εγκατάσταση της [Python](https://www.python.org/downloads/)  .
 
 ## Setup
-Τα απαρίτητα βήματα που πρέπει να γίνουν για την δημουργία του docker container και του image, με το students.json περασμένο.
-Προαπαραίτητη η ύπαρξη και η εγκατάσταση του [Docker](https://hub.docker.com/).
-Για την δυνατότητα ελέγχου της υλοποίησης της εφαρμογής, θα χρειαστεί πρώτα να γίνει η δημιουργία ενός Docker Container.
 
-###### Δημιουργία Docker Container
-Στο Powershell/Terminal γράφουμε τα παρακάτω:
-
-```
-docker pull mongo
-docker run -d -p 27017:27017 --name mongodb mongo:4.0.4
-docker exec -it mongodb mongo
-```
-Τώρα βρισκόμαστε στο περιβάλλον του Mongo Shell. Εδώ γράφουμε:
-```
-use InfoSys
-```
-Φεύγουμε από το περιβάλλον με CTR+C.
-Μπαίνουμε μέσω του CMD στον φάκελο data. Εκεί τρέχουμε το παρακάτω:
-```
-docker cp students.json mongodb:/students.json
-docker exec -it mongodb mongoimport --db=InfoSys --collection=Students --file=students.json
-```
-Ελέγχουμε εάν το docker container τρέχει. Εάν όχι το ξεκινάμε με:
-
-```
-docker start mongodb
-```
 
 ###### Τρέξιμο εφαρμογής
 Στον φάκελο που υπάρχει το app.py εκτελούμε:
