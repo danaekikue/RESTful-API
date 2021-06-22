@@ -152,12 +152,12 @@ Wrong username or password.
 Unauthorized client error. No session initiated.
 ```
 
-*Επίσης για τα endpoints ενός απλού χρήστη, εάν ένας admin επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα: *
+*Επίσης για τα endpoints ενός απλού χρήστη, εάν ένας admin επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα:*
 ```
 You are logged in with your admin account. Please switch to a normal user account.
 ```
 
-*Αντίστοιχα για τα endpoints ενός admin, εάν ένας απλός χρήστης επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα: *
+*Αντίστοιχα για τα endpoints ενός admin, εάν ένας απλός χρήστης επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα:*
 ```
 Action not allowed, user does not have admin privileges!
 ```
