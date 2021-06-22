@@ -12,14 +12,14 @@
 ## About / Synopsis
 
 Εργασία πάνω στην υλοποίηση ενός RESTful API, για το μάθημα των Πληροφοριακών Συστημάτων του Πανεπιστημίου Πειραιώς.Πρόκειται για ένα σύστημα το οποίο θα χρησιμοποιείται από πελάτες ενός σούπερ μάρκετ για την αναζήτηση και αγορά των προϊόντων που παρέχονται.
+
  <br/>Φτιαγμένο με Python 3.9.2, Flask API και MongoDB.
  <br/>Flask : Python Based mini-Webframework
  <br/>MongoDB : Database Server
  <br/>Pymongo : Database Connector ( For creating connectiong between MongoDB and Flask )
  <br/>Yλοποιημένο σε Docker περιβάλλον.
  <br/>Για τον έλεγχο της υλοποίησης χρησιμοποιήθηκε το [Postman](https://www.postman.com/)  
- 
- Apo
+
 
 ## Setup
 
