@@ -27,9 +27,11 @@
 
 
 ###### Τρέξιμο εφαρμογής
-Στον φάκελο που υπάρχει το app.py εκτελούμε:
+
+1) Clone ή download το repository.
+2) Στον φάκελο που υπάρχει το docker-compose.yml εκτελούμε:
 ```
-python app.py
+docker-compose up
 ```
 Και τώρα μέσω του [Postman](https://www.postman.com/) στην διεύθνση http://127.0.0.1:5000/<αντίστιχο link>, μπορούμε να κάνουμε δοκιμές.
 
