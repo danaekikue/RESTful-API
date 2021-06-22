@@ -96,8 +96,6 @@ python app.py
 Ο κώδικας είναι πλήρως σχολιασμένος για περισσότερες λεπτομέρειες του τρόπου υλοποίησης.
 Σε κάθε ερώτημα αναφέρονται παραδείγματα από τρεξίματα του κώδικα για όλες τις περιπτώσεις.
 
-**email** : Το email προς αναζήτηση. Όπου υπάρχει, αντικατάσταση με το email που θέλουμε να δοκιμάσουμε. Τα email αυτά, για να έχουμε σωστά αποτελέσματα, προέρχονται από το students.json
-
 ### /createUser
 POST request URL: http://127.0.0.1:5000/createUser
 <br/>Δέχεται στο body του request ενα json της μορφής:
@@ -154,6 +152,15 @@ Wrong username or password.
 Unauthorized client error. No session initiated.
 ```
 
+*Επίσης για τα endpoints ενός απλού χρήστη, εάν ένας admin επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα: *
+```
+You are logged in with your admin account. Please switch to a normal user account.
+```
+
+*Αντίστοιχα για τα endpoints ενός admin, εάν ένας απλός χρήστης επιχειρήσει να εκτελέσει κάποια λειτουργία, θα του εμφανιστεί το παρακάτω μήνυμα: *
+```
+Action not allowed, user does not have admin privileges!
+```
 
 ## Απλός χρήστης
 
@@ -163,8 +170,14 @@ GET request URL: http://127.0.0.1:5000/deleteAccount
 
 
 
-Αν υπάρχει session και ο χρήστης ανοίκει στην κατηγορία του user, τότε διαγράφεται επιτυχώς ο λογαριασμός του.
+Αν υπάρχει session και ο χρήστης ανοίκει στην κατηγορία του user, τότε διαγράφεται επιτυχώς ο λογαριασμός του. Επιστρέφεται μήνυμα
 
+```
+The account associated with the email test@dsmarket.com was successfully deleted.
+```
+
+Στο συγκεκριμένο endpoint, το email παίρνεται από τα δεδομένα του χρήστη ( uuid και email ) που έχουν αποθηκευτεί για το τρέχων session.
+Με βάση αυτό το email γίνεται η διαγραφή του από την βάση, καθώς και η εκαθάριση του user_sessions, για να μην υπάρχει πλέον πρόσβαση στο σύστημα. 
 
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -173,38 +186,45 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/name/<string:name>
-GET request URL: http://127.0.0.1:5000/getStudents/thirties
+GET request URL: http://127.0.0.1:5000/findProduct/name/<string:name>
 
+**<string:name>** : Το όνομα του προϊόντος προς αναζήτηση. Όπου υπάρχει, αντικατάσταση με το όνομα που θέλουμε να αναζητήσουμε.
 
-Δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
+Μέσω του usser_sessions που αποθηκεύει το uuid και το email του τρέχων χρήστη, παίρνουμε και ελέγχουμε το uuid του session.
 
-Αν έχει υπάρχει session και υπάρχουν φοιτητές που είναι 30 ετών, επιστρέφει τις πληροφορίες τους:
+Αν έχει υπάρχει session και υπάρχουν προϊόντα με το όνομα που έχουμε δώσει, επιστρέφει τις πληροφορίες τους:
 ```
-There are 2 students that are 30: [
+Products matching 'Milk' : [
     {
-        "name": "Browning Rasmussen",
-        "email": "browningrasmussen@ontagene.com",
-        "yearOfBirth": 1991,
-        "address": [
-            {
-                "street": "Doone Court",
-                "city": "Cuylerville",
-                "postcode": 17331
-            }
-        ]
+        "_id": "60cb78a56ff56e024d7a8cde",
+        "name": "Milk",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 44
     },
     {
-        "name": "Bennett Baker",
-        "email": "bennettbaker@ontagene.com",
-        "yearOfBirth": 1991,
-        "gender": "male"
+        "_id": "60cb7a406ff56e024d7a8ce0",
+        "name": "Milk 2%",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 98
+    },
+    {
+        "_id": "60cb7b8fa27c91e90e53505f",
+        "name": "Delta Milk",
+        "price": 2.5,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 101
     }
 ]
 ```
 
-Αν δεν υπάρχουν φοιτητές που να είναι 30 ετών, τότε επιστρέφει: 
+Αν δεν υπάρχουν προϊόντα, τότε επιστρέφει: 
 ```
-No students of the age of 30 exist
+There is no Product associated with the name Cherry
 ```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -213,57 +233,69 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/category/<string:category>
-GET request URL: http://127.0.0.1:5000/getStudents/oldies
+GET request URL: /findProduct/category/<string:category>
 
-Δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
+**<string:category>** : H κατηγορία του προϊόντος προς αναζήτηση. Όπου υπάρχει, αντικατάσταση με την κατηγορία που θέλουμε να αναζητήσουμε.
 
-Αν έχει υπάρχει session και υπάρχουν φοιτητές που είναι άνω των 30 ετών, επιστρέφει τις πληροφορίες τους:
+Μέσω του usser_sessions που αποθηκεύει το uuid και το email του τρέχων χρήστη, παίρνουμε και ελέγχουμε το uuid του session.
+
+Αν έχει υπάρχει session και υπάρχουν προϊόντα με την κατηγορία που έχουμε δώσει, επιστρέφει τις πληροφορίες τους:
 ```
-There are 115 students that are over 30: [
+Products matching 'dairy' : [
     {
-        "name": "Tanner Wilson",
-        "email": "tannerwilson@ontagene.com",
-        "yearOfBirth": 1962,
-        "address": [
-            {
-                "street": "Halsey Street",
-                "city": "Greenwich",
-                "postcode": 13832
-            }
-        ],
-        "courses": [
-            {
-                "Information Systems": 8,
-                "Statistics": 9,
-                "Web Programming": 10
-            }
-        ]
+        "_id": "60ccbe048febbc431ca1a3be",
+        "name": "Eggs 6",
+        "price": 0.8,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 216
     },
     {
-        "name": "Lavonne Leon",
-        "email": "lavonneleon@ontagene.com",
-        "yearOfBirth": 1967,
-        "address": [
-            {
-                "street": "Chauncey Street",
-                "city": "Chase",
-                "postcode": 12663
-            }
-        ],
-        "courses": [
-            {
-                "Information Systems": 4,
-                "Statistics": 3,
-                "Web Programming": 5
-            }
-        ]
+        "_id": "60ccbdf38febbc431ca1a3bd",
+        "name": "Yogurt",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 89
     },
-    ...
+    {
+        "_id": "60ccbde28febbc431ca1a3bc",
+        "name": "Greek Yogurt",
+        "price": 1.8,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 19
+    },
+    {
+        "_id": "60cb78a56ff56e024d7a8cde",
+        "name": "Milk",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 44
+    },
+    {
+        "_id": "60cb7a406ff56e024d7a8ce0",
+        "name": "Milk 2%",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 98
+    },
+    {
+        "_id": "60cb7b8fa27c91e90e53505f",
+        "name": "Delta Milk",
+        "price": 2.5,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 101
+    }
+]
 ```
 
-Αν δεν υπάρχουν φοιτητές που να είναι πάνω των 30 ετών, τότε επιστρέφει: 
+Αν δεν υπάρχουν προϊόντα, τότε επιστρέφει: 
 ```
-No students over the age of 30 exist
+There is no Product associated with the category dairy.
 ```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -272,34 +304,33 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/ID/<string:id>
-GET request URL: http://127.0.0.1:5000/getStudentAddress/email
+GET request URL: http://127.0.0.1:5000/findProduct/ID/<string:id>
 
-Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
+**<string:id>** : Το id του προϊόντος προς αναζήτηση. Όπου υπάρχει, αντικατάσταση με  το id που θέλουμε να αναζητήσουμε.
 
+Μέσω του usser_sessions που αποθηκεύει το uuid και το email του τρέχων χρήστη, παίρνουμε και ελέγχουμε το uuid του session.
+
+Αν έχει υπάρχει session και υπάρχει προϊόν με το id που έχουμε δώσει, επιστρέφει τις πληροφορίες τους:
 ```
-http://127.0.0.1:5000/getStudentAddress/dorthycobb@ontagene.com
-```
-
-Επίσης δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
-
-Αν υπάρχει session, υπάρχει ο φοιτητής με το email που δόθηκε και έχει δηλώσει κατοικία, επιστρέφει τις πληροφορίες του:
-```
-Morton Fitzgerald's address information: {
-    "name": "Morton Fitzgerald",
-    "street": "Jardine Place",
-    "postcode": 18330
+The product with the ID '60cb7b8fa27c91e90e53505f' is the following: {
+    "name": "Delta Milk",
+    "price": 2.5,
+    "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+    "category": "dairy",
+    "stock": 101
 }
 ```
 
-Αν δεν υπάρχει φοιτητής με αυτό το email τότε επιστρέφει: 
+Αν δεν υπάρχουν προϊόντα, τότε επιστρέφει: 
 ```
-There is no student associated with the email fg@ontagene.com
+There is no Product associated with the id ddffghhgf.
 ```
 
-Αν δεν έχει δηλώσει κατοικία ο φοιτητής, τότε επιστρέφει: 
+Αν το ID δεν έχει την σωστή μορφή, βγάζει μήνυμα λάθους.
 ```
-There is no address associated with Dorthy Cobb
+The ID you provided is not correct. Please try again.
 ```
+
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
@@ -307,24 +338,40 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /addToCart/<string:id>/<int:quantity>
-DEL request URL: http://127.0.0.1:5000/deleteStudent/email
+GET request URL: http://127.0.0.1:5000/<string:id>/<int:quantity>
 
-Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
+Δέχεται σαν argument το id που θέλει να αγοράσει ο χρήστης, καθώς και την ποσότητα που θέλει.
 
 ```
-http://127.0.0.1:5000/getStudentAddress/dorthycobb@ontagene.com
+http://127.0.0.1:5000/addToCart/60cb7b8fa27c91e90e53505f/2
 ```
 
-Επίσης δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
+Αν υπάρχει session γίνεται η προσθήκη στο καλάθι του προϊόντος με βάση το ID. Στο καλάθι υπάρχει και το συνολικό κόστος, το οποίο ανανεώνεται κάθε φορά που προστίθεται ένα προϊόν. Επιτυχές αποτέλεσμα:
+```
+Cart was updated with 2 items of Delta Milk. 
+ Your cart now includes: [
+    {
+        "_id": "60cb7b8fa27c91e90e53505f",
+        "name": "Delta Milk",
+        "price": 2.5,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 101,
+        "quantity": 2
+    }
+]
+ Total cost is: 5.00€
+```
 
-Αν υπάρχει session και υπάρχει ο φοιτητής με το email που δόθηκε, επιστρέφει μήνυμα επιτυχίας:
+Αν το απόθεμα είναι λιγότερο από την ποσότητα που ζητήθηκε,εμφανίζεται μήνυμα λάθους.
 ```
-Schwartz Butler was deleted.
+We are sorry but the quantity you are asking for is greater than our stock of this product.
+Current stock of Delta Milk is: 101
 ```
 
-Αν δεν υπάρχει φοιτητής με αυτό το email τότε επιστρέφει: 
+Αν το ID δεν έχει την σωστή μορφή, βγάζει μήνυμα λάθους.
 ```
-There is no student associated with the email ddffg@ontagene.com
+The ID you provided is not correct. Please try again.
 ```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -333,27 +380,37 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /showCart
-PATCH request URL: http://127.0.0.1:5000/addCourses/email
+GET request URL: http://127.0.0.1:5000/showCart
 
-Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
 
+Αν υπάρχει session, επιστρέφει τα περιεχόμενα του καλαθιού και το κόστος όλων των προϊόντων
 ```
-http://127.0.0.1:5000/getStudentAddress/mortonfitzgerald@ontagene.com
+Your cart includes: [
+    {
+        "_id": "60cb7b8fa27c91e90e53505f",
+        "name": "Delta Milk",
+        "price": 2.5,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 101,
+        "quantity": 2
+    },
+    {
+        "_id": "60ccbdf38febbc431ca1a3bd",
+        "name": "Yogurt",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 89,
+        "quantity": 2
+    }
+]
+ Total cost is: 7.40€
 ```
 
-Επίσης δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
-
-Αν υπάρχει session και υπάρχει ο φοιτητής με το email που δόθηκε, επιστρέφει μήνυμα επιτυχίας:
+Αν το καλάθι είναι άδειο: 
 ```
-Lavonne Leon's information was updated: 
-Information Systems: 8
-Statistics: 9
-Web Programming: 10
-```
-
-Αν δεν υπάρχει φοιτητής με αυτό το email τότε επιστρέφει: 
-```
-There is no student associated with the email ddffg@ontagene.com
+The cart is empty.
 ```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -362,38 +419,40 @@ Unauthorized client error. No session initiated.
 ```
 
 ### /removeFromCart/<string:id>
-GET request URL: http://127.0.0.1:5000/getPassedCourses/email
+GET request URL: http://127.0.0.1:5000//removeFromCart/<string:id>
 
-Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
+Δέχεται σαν argument το id του προϊόντος προς διαγραφή που αναζητούμε στο link
 
 ```
-http://127.0.0.1:5000/getStudentAddress/tannerwilson@ontagene.com
-```
-
-Επίσης δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
-
-Αν υπάρχει session, υπάρχει ο φοιτητής με το email που δόθηκε και έχει μαθήματα που έχει περάσει, επιστρέφει:
-```
-Here are the grades for the subjects that Tanner Wilson passed: {
-    "Information Systems": 8,
-    "Statistics": 9,
-    "Web Programming": 10
-}
+http://127.0.0.1:5000/removeFromCart/60cb7b8fa27c91e90e53505f
 ```
 
-Αν δεν έχει έχει μαθήματα που έχει περάσει, τότε επιστρέφει: 
+
+Αν υπάρχει session, επιστρέφει το ανανεώμενο περιεχόμενο του καλαθιού και το κόστος όλων των προϊόντων
 ```
-Lavonne Leon has not passed any subjects
+Your cart includes: [
+    {
+        "_id": "60ccbdf38febbc431ca1a3bd",
+        "name": "Yogurt",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 89,
+        "quantity": 2
+    }
+]
+ Total cost is: 2.40€
 ```
 
-Αν δεν έχει courses, τότε επιστρέφει: 
+Γίνεται και η διαδοχική διαγραφή προϊόντων. Όταν πια το καλάθι είναι άδειο, εμφανίζεται αντίστοιχο μήνυμα:
+
 ```
-There are no courses associated with Mcgowan Robinson
+The cart doens't have any more items to remove
 ```
 
-Αν δεν υπάρχει φοιτητής με αυτό το email τότε επιστρέφει: 
+Αν δεν έχει εξαρχής προϊόντα:
 ```
-There is no student associated with the email fg@ontagene.com
+The cart is empty
 ```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -403,8 +462,64 @@ Unauthorized client error. No session initiated.
 
 ### /checkOut/<int:card_num>
 
+GET request URL: http://127.0.0.1:5000/checkOut/<int:card_num>
+
+Δέχεται σαν argument τον αριθμό κάρτας για την πληρωμή των προϊόντων.
+
+```
+http://127.0.0.1:5000/checkOut/1234567891234567
+```
 
 
+Αν υπάρχει session και ο αριθμός της κάρτας είναι 16 ψηφία, επιστρέφει την απόδειξη της πληρωμής:
+```
+Thank you for your purchase. 
+Receipt for purchase:
+ Total Cost: 8.00€
+ Products bought: [
+    {
+        "_id": "60ccbdf38febbc431ca1a3bd",
+        "name": "Yogurt",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 87,
+        "quantity": 2
+    },
+    {
+        "_id": "60d05cdf910377f7d7732a77",
+        "name": "Bananas",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "fruit",
+        "stock": 150,
+        "quantity": 3
+    },
+    {
+        "_id": "60cb78a56ff56e024d7a8cde",
+        "name": "Milk",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 44,
+        "quantity": 1
+    },
+    {
+        "cost": "8.00"
+    }
+]
+```
+
+Αν ο αριθμός της κάρτας δεν είναι 16 ψηφία: 
+
+```
+The input of your card number is not 16 digits long. Please try again.
+```
+
+Αν δεν έχει το καλάθι εξαρχής προϊόντα:
+```
+The cart is empty
+```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
@@ -414,10 +529,53 @@ Unauthorized client error. No session initiated.
 
 ### /viewHistory
 
+GET request URL: http://127.0.0.1:5000/viewHistory
 
 
+Αν υπάρχει session και ο συγκεκριμένος χρήστης έχει ιστορικό παραγγελιών, εμφανίζεται το ιστορικό του:
+```
+Thank you for your purchase. 
+Receipt for purchase:
+ Total Cost: 8.00€
+ Products bought: [
+    {
+        "_id": "60ccbdf38febbc431ca1a3bd",
+        "name": "Yogurt",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "dairy",
+        "stock": 87,
+        "quantity": 2
+    },
+    {
+        "_id": "60d05cdf910377f7d7732a77",
+        "name": "Bananas",
+        "price": 1.2,
+        "description": "gfdgsdjkhjkgfgsdfgdsg",
+        "category": "fruit",
+        "stock": 150,
+        "quantity": 3
+    },
+    {
+        "_id": "60cb78a56ff56e024d7a8cde",
+        "name": "Milk",
+        "price": 2.0,
+        "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+        "category": "dairy",
+        "stock": 44,
+        "quantity": 1
+    },
+    {
+        "cost": "8.00"
+    }
+]
+```
 
+Αν ο δεν έχει κάνει καμία παραγγελία και δεν υπάρχει ιστορικό, του εμφανίζεται αντίστοιχο μήνυμα:
 
+```
+You haven't made any orders yet.
+```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
@@ -426,14 +584,40 @@ Unauthorized client error. No session initiated.
 
 
 
-
 ## Admin
 
 ### /addProduct
 
+GET request URL: http://127.0.0.1:5000/addProduct
 
+Δέχεται στο body του request ενα json της μορφής:
 
+```
+{
+    "name": "Apple", 
+    "price": 4.50, 
+    "description": "Delicious biological fruit",
+    "category": "fruit", 
+    "stock": 150
+}
+```
 
+Αν υπάρχει session και δεν υπάρχει ήδη προϊόν με το όνομα που δίνεται, εμφανίζεται το παρακάτω μήνυμα: 
+```
+The product with the name 'Apple' was added: {
+    "name": "Apple",
+    "price": 4.5,
+    "description": "Delicious biological fruit",
+    "category": "fruit",
+    "stock": 150
+}
+```
+
+Αν ήδη υπάρχει τέτοιο προϊόν:
+
+```
+The product with the name 'Apple' already exists
+```
 
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
@@ -443,7 +627,25 @@ Unauthorized client error. No session initiated.
 
 ### /deleteProduct/<string:id>
 
+GET request URL: http://127.0.0.1:5000/deleteProduct/60d210c965e5759937b32487
 
+
+Αν υπάρχει session και υπάρχει ήδη προϊόν με το όνομα που δίνεται, εμφανίζεται το παρακάτω μήνυμα: 
+```
+Apple was deleted.
+```
+
+Αν δεν υπάρχει τέτοιο προϊόν:
+
+```
+There is no such product to delete.
+```
+
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
 
 
 
@@ -456,11 +658,25 @@ Unauthorized client error. No session initiated.
 
 ### /updateProduct/<string:id>
 
+GET request URL: http://127.0.0.1:5000/updateProduct/60cb78a56ff56e024d7a8cde
 
 
+Αν υπάρχει session και υπάρχει ήδη προϊόν με το ID που δίνεται, εμφανίζεται το παρακάτω μήνυμα: 
+```
+Milk's information was updated: {
+    "name": "Milk",
+    "price": "3",
+    "description": "Produced with care from our 700 producers throughout Greece, from cows fed cows fed on clover, corn, barley and other plant feeds, with interactive packaging through Shazam and Augmented Reality, 7-day shelf life",
+    "category": "dairy",
+    "stock": 43
+}
+```
 
+Αν δεν υπάρχει τέτοιο προϊόν:
 
-
+```
+There is no such product.
+```
 
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
