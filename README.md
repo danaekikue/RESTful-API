@@ -147,6 +147,9 @@ Data: {
 Wrong username or password.
 ```
 
+## Απλός χρήστης
+
+
 ### /delete_account
 GET request URL: http://127.0.0.1:5000/getStudent/email
 
@@ -191,7 +194,7 @@ There is no student associated with the email ffsdff@ontagene.com
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 4 /getStudents/thirties
+### /findProduct/name/<string:name>
 GET request URL: http://127.0.0.1:5000/getStudents/thirties
 
 
@@ -231,7 +234,7 @@ No students of the age of 30 exist
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 5 /getStudents/oldies
+### /findProduct/category/<string:category>
 GET request URL: http://127.0.0.1:5000/getStudents/oldies
 
 Δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
@@ -290,7 +293,7 @@ No students over the age of 30 exist
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 6 /getStudentAddress/<string:email>
+### /findProduct/ID/<string:id>
 GET request URL: http://127.0.0.1:5000/getStudentAddress/email
 
 Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
@@ -325,7 +328,7 @@ There is no address associated with Dorthy Cobb
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 7
+### /addToCart/<string:id>/<int:quantity>
 DEL request URL: http://127.0.0.1:5000/deleteStudent/email
 
 Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
@@ -351,7 +354,7 @@ There is no student associated with the email ddffg@ontagene.com
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 8
+### /showCart
 PATCH request URL: http://127.0.0.1:5000/addCourses/email
 
 Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
@@ -380,7 +383,7 @@ There is no student associated with the email ddffg@ontagene.com
 User does not exist. Unauthorized client error
 ```
 
-### Ερώτημα 9
+### /removeFromCart/<string:id>
 GET request URL: http://127.0.0.1:5000/getPassedCourses/email
 
 Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
@@ -418,3 +421,15 @@ There is no student associated with the email fg@ontagene.com
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
 User does not exist. Unauthorized client error
+```
+
+### /checkOut/<int:card_num>
+
+
+
+### /viewHistory
+
+
+
+## Admin
+
