@@ -104,13 +104,14 @@ POST request URL: http://127.0.0.1:5000/createUser
 
 ```
 {
-    "username": "danai",
-    "password": "12343"
+    "name": "Jane Doe",
+    "email": "janedoe@dsmarket.com",
+    "password": "securePassword"
 }
 ```
 Επιστρέφει: 
 ```
-danai was added to the MongoDB
+Jane Doe, you have successfully signed up.
 ```
 
 Αν υπάρχει ήδη ένας χρήστης με αυτό το όνομα τότε επιστρέφει: 
@@ -125,8 +126,8 @@ POST request URL: http://127.0.0.1:5000/login
 
 ```
 {
-    "username": "danai",
-    "password": "12343"
+    "email": "janedoe@dsmarket.com",
+    "password": "securePassword"
 }
 ```
 
@@ -135,63 +136,40 @@ POST request URL: http://127.0.0.1:5000/login
 Επιστρέφει: 
 ```
 Session initiated. 
-Welcome danai. 
+Welcome to DSMarket Jane Doe 
 Data: {
-    "uuid": "fe836f19-b666-11eb-8a85-2cf05d7962e8",
-    "username": "danai"
+    "uuid": "bc6dab44-d35a-11eb-b616-001a7dda7115",
+    "email": "janedoe@dsmarket.com"
 }
 ```
 
-Αν δεν υπάρχει αυτός χρήστης με τα παραπάνω στοιχεία, επιστρέφει: 
+Αν δεν υπάρχει ο χρήστης με τα παραπάνω στοιχεία, επιστρέφει: 
 ```
 Wrong username or password.
 ```
+
+*Για όλα τα υπόλοιπα endpoints εάν δεν έχει γίνει η σύνδεση ενός χρήστη στο σύστημα ( είτε απλού χρήστη είτε admin ), τότε θα βγάλει αντίστοιχο μήνυμα λάθους. Το μήνυμα αυτό είναι το παρακάτω: *
+
+```
+Unauthorized client error. No session initiated.
+```
+
 
 ## Απλός χρήστης
 
 
 ### /delete_account
-GET request URL: http://127.0.0.1:5000/getStudent/email
+GET request URL: http://127.0.0.1:5000/deleteAccount
 
-Δέχεται σαν argument το email του φοιτητή που αναζητούμε στο link
 
-```
-http://127.0.0.1:5000/getStudent/mortonfitzgerald@ontagene.com
-```
 
-Επίσης δέχεται στον header το uuid του session που ξεκίνησε μέσω του ερωτήματος 2. Το uuid αυτό πρέπει να ανατεθεί σε ένα header με Key: Authorization kai Value: το uuid ( η διαδικασία αυτή έχει γίνει μέσω της χρήσης του Postman που παρέχει τέτοια δυνατότητα )
+Αν υπάρχει session και ο χρήστης ανοίκει στην κατηγορία του user, τότε διαγράφεται επιτυχώς ο λογαριασμός του.
 
-Αν υπάρχει session και υπάρχει ο φοιτητής με το email που δόθηκε, επιστρέφει τις πληροφορίες του:
-```
-Morton Fitzgerald's information: {
-    "name": "Morton Fitzgerald",
-    "email": "mortonfitzgerald@ontagene.com",
-    "yearOfBirth": 1997,
-    "address": [
-        {
-            "street": "Jardine Place",
-            "city": "Lowgap",
-            "postcode": 18330
-        }
-    ],
-    "courses": [
-        {
-            "Information Systems": 10,
-            "Statistics": 3,
-            "Web Programming": 8
-        }
-    ]
-}
-```
 
-Αν δεν υπάρχει φοιτητής με αυτό το email τότε επιστρέφει: 
-```
-There is no student associated with the email ffsdff@ontagene.com
-```
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/name/<string:name>
@@ -231,7 +209,7 @@ No students of the age of 30 exist
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/category/<string:category>
@@ -290,7 +268,7 @@ No students over the age of 30 exist
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /findProduct/ID/<string:id>
@@ -325,7 +303,7 @@ There is no address associated with Dorthy Cobb
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /addToCart/<string:id>/<int:quantity>
@@ -351,7 +329,7 @@ There is no student associated with the email ddffg@ontagene.com
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /showCart
@@ -380,7 +358,7 @@ There is no student associated with the email ddffg@ontagene.com
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /removeFromCart/<string:id>
@@ -420,16 +398,74 @@ There is no student associated with the email fg@ontagene.com
 
 Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
 ```
-User does not exist. Unauthorized client error
+Unauthorized client error. No session initiated.
 ```
 
 ### /checkOut/<int:card_num>
 
 
 
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
+
+
 ### /viewHistory
 
 
 
+
+
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
+
+
+
+
 ## Admin
+
+### /addProduct
+
+
+
+
+
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
+
+### /deleteProduct/<string:id>
+
+
+
+
+
+
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
+
+### /updateProduct/<string:id>
+
+
+
+
+
+
+
+
+Αν δεν υπάρχει session που να τρέχει, τότε επιστρέφει: 
+```
+Unauthorized client error. No session initiated.
+```
+
 
