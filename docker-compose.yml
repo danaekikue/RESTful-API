@@ -10,7 +10,7 @@ services:
     - ./mongodb/data:/data/db 
   flask-service:
     build:
-      context: ./flask 
+      context: ./app 
     restart: always 
     container_name: flask 
     depends_on: 
